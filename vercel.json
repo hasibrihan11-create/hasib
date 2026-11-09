@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "csmatchstarter": {
+      "root": "CS MATCH STARTER",
+      "runtime": "python"
+    },
+    "cs_boost": {
+      "root": "CS MATCH STARTER/cs_boost",
+      "runtime": "python"
+    }
+  },
+  "rewrites": []
+}
