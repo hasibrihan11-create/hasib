@@ -1,5 +1,0 @@
-aiohttp
-pycryptodome
-protobuf
-protobuf-decoder
-urllib3
