@@ -1,0 +1,54 @@
+{
+  "8405568010": {
+    "unique_device_id": "Google|ff85091b-cb9a-4eff-915d-5a6e341776d8",
+    "brand": "Xiaomi",
+    "model": "2201122G",
+    "gpu_renderer": "Adreno (TM) 730",
+    "system_software": "Android OS 13 / API-33",
+    "screen_width": 1440,
+    "screen_height": 2400,
+    "screen_dpi": "408",
+    "memory": 3710,
+    "processor_details": "ARM64 FP ASIMD AES | 3028 | 11",
+    "client_ip": "117.230.69.138"
+  },
+  "8405568978": {
+    "unique_device_id": "Google|46c0a8ef-f209-4332-bf70-7ca2ff5b2322",
+    "brand": "Realme",
+    "model": "RMX3700",
+    "gpu_renderer": "Mali-G710",
+    "system_software": "Android OS 14 / API-34",
+    "screen_width": 1440,
+    "screen_height": 2400,
+    "screen_dpi": "401",
+    "memory": 4196,
+    "processor_details": "ARM64 FP ASIMD AES | 2606 | 12",
+    "client_ip": "201.54.45.49"
+  },
+  "8405567505": {
+    "unique_device_id": "Google|39016c2c-c0b0-4c47-801c-f916611d179c",
+    "brand": "OPPO",
+    "model": "CPH2611",
+    "gpu_renderer": "Adreno (TM) 720",
+    "system_software": "Android OS 14 / API-34",
+    "screen_width": 1080,
+    "screen_height": 1600,
+    "screen_dpi": "408",
+    "memory": 4357,
+    "processor_details": "ARM64 FP ASIMD AES | 2891 | 11",
+    "client_ip": "194.123.228.77"
+  },
+  "8405568663": {
+    "unique_device_id": "Google|b9e70091-64b7-4a7f-a682-274ce6828e59",
+    "brand": "OnePlus",
+    "model": "CPH2451",
+    "gpu_renderer": "Adreno (TM) 740",
+    "system_software": "Android OS 13 / API-33",
+    "screen_width": 1080,
+    "screen_height": 3200,
+    "screen_dpi": "322",
+    "memory": 4901,
+    "processor_details": "ARM64 FP ASIMD AES | 2698 | 11",
+    "client_ip": "197.48.147.50"
+  }
+}
