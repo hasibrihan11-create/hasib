@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS Match Starter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0c0c0c;
+      --panel: #141414;
+      --line: rgba(255,117,26,.2);
+      --orange: #ff751a;
+      --text: #f5f5f5;
+      --muted: #8b919a;
+      --ok: #34d399;
+      --bad: #f87171;
+      --warn: #fbbf24;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse 55% 40% at 10% 0%, rgba(255,117,26,.16), transparent 55%),
+        radial-gradient(ellipse 40% 35% at 90% 10%, rgba(255,128,0,.08), transparent 50%),
+        var(--bg);
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: rgba(12,12,12,.85);
+    }
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      letter-spacing: -.02em;
+    }
+    h1 span { color: var(--orange); }
+    .meta { color: var(--muted); font-size: 13px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+    .meta b { color: var(--text); font-weight: 600; }
+    main {
+      display: grid;
+      grid-template-columns: minmax(280px, 380px) 1fr;
+      gap: 18px;
+      padding: 18px 22px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+    }
+    .panel h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    input, textarea {
+      width: 100%;
+      background: #101010;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 10px;
+      color: #fff;
+      padding: 11px 12px;
+      font-size: 14px;
+      outline: none;
+      margin-bottom: 12px;
+    }
+    textarea {
+      min-height: 160px;
+      resize: vertical;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    input:focus, textarea:focus { border-color: rgba(255,128,0,.45); }
+    .hint { font-size: 12px; color: var(--muted); margin: -6px 0 14px; line-height: 1.4; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #ff751a, #ff8a2b);
+      color: #111;
+      flex: 1;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .btn-danger {
+      background: rgba(248,113,113,.12);
+      color: #fca5a5;
+      border: 1px solid rgba(248,113,113,.3);
+    }
+    button:hover { filter: brightness(1.06); }
+    button:disabled { opacity: .5; cursor: not-allowed; filter: none; }
+    .jobs { display: flex; flex-direction: column; gap: 12px; }
+    .job {
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #101010;
+    }
+    .job-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      align-items: flex-start;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .uid {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .subline { color: var(--muted); font-size: 12px; margin-top: 3px; }
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      padding: 5px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+      background: rgba(255,255,255,.06);
+      color: #ddd;
+    }
+    .badge.SEARCHING, .badge.RUNNING, .badge.STARTING { background: rgba(251,191,36,.12); color: var(--warn); }
+    .badge.ALLOTTED, .badge.IN_MATCH { background: rgba(52,211,153,.12); color: var(--ok); }
+    .badge.DONE { background: rgba(52,211,153,.18); color: var(--ok); }
+    .badge.FAILED, .badge.TIMEOUT { background: rgba(248,113,113,.14); color: var(--bad); }
+    .badge.STOPPED { background: rgba(156,163,175,.14); color: #d1d5db; }
+    .log-wrap {
+      margin: 0 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.06);
+      background:
+        linear-gradient(180deg, rgba(255,117,26,.04), transparent 40%),
+        #0a0a0a;
+      overflow: hidden;
+      position: relative;
+    }
+    .log-wrap::before {
+      content: 'LIVE LOG';
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: rgba(255,117,26,.55);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .log {
+      max-height: 260px;
+      overflow: auto;
+      padding: 14px 14px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.55;
+      scroll-behavior: auto;
+    }
+    .log::-webkit-scrollbar { width: 8px; }
+    .log::-webkit-scrollbar-track { background: transparent; }
+    .log::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.12);
+      border-radius: 8px;
+    }
+    .log::-webkit-scrollbar-thumb:hover { background: rgba(255,117,26,.4); }
+    .log-line {
+      display: block;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #9ca3af;
+      padding: 1px 0;
+    }
+    .log-line.ok { color: #6ee7b7; }
+    .log-line.warn { color: #fbbf24; }
+    .log-line.err { color: #fca5a5; }
+    .log-line.info { color: #93c5fd; }
+    .log-line.ui { color: #fdba74; }
+    .log-line.debug { color: #6b7280; }
+    .log-line.hl { color: #fde68a; }
+    .log-empty { color: #6b7280; font-style: italic; }
+    .job-actions { padding: 0 14px 12px; }
+    .empty {
+      color: var(--muted);
+      font-size: 14px;
+      padding: 28px 8px;
+      text-align: center;
+    }
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      background: #1a1a1a;
+      border: 1px solid var(--line);
+      color: #fff;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+      z-index: 20;
+      max-width: 320px;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>CS <span>Match Starter</span></h1>
+      <div class="meta" style="margin-top:4px">
+        <span>Active <b id="active">0</b>/<b id="max">0</b></span>
+        <span>AFK after join <b id="afk">45</b>s</span>
+        <span id="engine">engine …</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Start Clash Squad</h2>
+      <label for="uid">Single UID</label>
+      <input id="uid" placeholder="guest uid" autocomplete="off">
+      <label for="password">Password</label>
+      <input id="password" placeholder="guest password" autocomplete="off">
+      <label for="bulk">Or paste list (uid:pass per line)</label>
+      <textarea id="bulk" placeholder="1234567890:password_here&#10;9876543210|other_pass"></textarea>
+      <p class="hint">Only starts CS match — no Lone Wolf, no level-up loop. One engine process per account.</p>
+      <div class="row">
+        <button class="btn-primary" id="btnStart" onclick="startJobs()">Start CS</button>
+        <button class="btn-danger" onclick="stopAll()">Stop all</button>
+        <button class="btn-ghost" onclick="clearDone()">Clear done</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Jobs</h2>
+      <div class="jobs" id="jobs"><div class="empty">No jobs yet</div></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    /** jobId -> stick to bottom (true) until user scrolls up */
+    const stickBottom = new Map();
+    /** jobId -> last rendered log fingerprint */
+    const logSig = new Map();
+
+    function toast(msg) {
+      const el = $('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => el.classList.remove('show'), 2600);
+    }
+
+    function esc(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]));
+    }
+
+    function logClass(line) {
+      const t = String(line || '');
+      const low = t.toLowerCase();
+      if (t.startsWith('[UI]') || low.includes('[ui]')) return 'ui';
+      if (low.includes('error') || low.includes('erro') || low.includes('failed') || low.includes('banned') || low.includes('invalid')) return 'err';
+      if (low.includes('timeout') || low.includes('warn') || low.includes('looking for')) return 'warn';
+      if (low.includes('[debug]') || low.includes('incoming packet')) return 'debug';
+      if (
+        low.includes('match allotment') ||
+        low.includes('join_match') ||
+        low.includes('in match') ||
+        low.includes('jwt ok') ||
+        low.includes('tcp connected') ||
+        low.includes('accepted') ||
+        t.includes('[+]')
+      ) return 'ok';
+      if (t.includes('[CS_PROFILE]') || low.includes('clash squad') || low.includes('matchmaking')) return 'hl';
+      if (t.includes('[+]')) return 'info';
+      return '';
+    }
+
+    function renderLogHtml(lines) {
+      if (!lines || !lines.length) {
+        return '<span class="log-line log-empty">waiting for logs…</span>';
+      }
+      return lines.map(line => {
+        const cls = logClass(line);
+        return `<span class="log-line${cls ? ' ' + cls : ''}">${esc(line)}</span>`;
+      }).join('');
+    }
+
+    async function api(path, opts) {
+      const res = await fetch(path, {
+        headers: { 'Content-Type': 'application/json' },
+        ...opts,
+      });
+      return res.json();
+    }
+
+    async function startJobs() {
+      const uid = $('uid').value.trim();
+      const password = $('password').value.trim();
+      const accounts = $('bulk').value.trim();
+      if (!uid && !password && !accounts) {
+        toast('UID/pass or list required');
+        return;
+      }
+      $('btnStart').disabled = true;
+      try {
+        const data = await api('/api/start', {
+          method: 'POST',
+          body: JSON.stringify({ uid, password, accounts }),
+        });
+        if (!data.ok) {
+          toast(data.error || 'failed');
+        } else {
+          const n = (data.started || []).length;
+          const e = (data.errors || []).length;
+          toast(`Started ${n}` + (e ? `, ${e} error(s)` : ''));
+          if (n) {
+            $('uid').value = '';
+            $('password').value = '';
+          }
+          await refresh();
+        }
+      } catch (e) {
+        toast(String(e.message || e));
+      } finally {
+        $('btnStart').disabled = false;
+      }
+    }
+
+    async function stopJob(id) {
+      await api('/api/stop/' + id, { method: 'POST', body: '{}' });
+      toast('Stop sent');
+      refresh();
+    }
+
+    async function stopAll() {
+      const data = await api('/api/stop_all', { method: 'POST', body: '{}' });
+      toast(`Stopped ${data.stopped || 0}`);
+      refresh();
+    }
+
+    async function clearDone() {
+      const data = await api('/api/clear_done', { method: 'POST', body: '{}' });
+      toast(`Cleared ${data.cleared || 0}`);
+      refresh();
+    }
+
+    function bindLogScroll(el, jobId) {
+      if (el._bound) return;
+      el._bound = true;
+      el.addEventListener('scroll', () => {
+        // ignore scroll jumps caused by our own innerHTML / scrollTop writes
+        if (el._ignoreScroll) return;
+        const gap = el.scrollHeight - el.scrollTop - el.clientHeight;
+        stickBottom.set(jobId, gap < 48);
+      }, { passive: true });
+    }
+
+    function scrollLogBottom(logEl) {
+      logEl._ignoreScroll = true;
+      logEl.scrollTop = logEl.scrollHeight;
+      // second pass after layout paints (fonts / wrap)
+      requestAnimationFrame(() => {
+        logEl.scrollTop = logEl.scrollHeight;
+        requestAnimationFrame(() => {
+          logEl.scrollTop = logEl.scrollHeight;
+          logEl._ignoreScroll = false;
+        });
+      });
+    }
+
+    function upsertJob(box, j) {
+      const active = !['DONE','FAILED','STOPPED','TIMEOUT'].includes(j.status);
+      const nick = j.nickname ? ` · ${esc(j.nickname)}` : '';
+      const region = j.region ? ` · ${esc(j.region)}` : '';
+      const flags = [
+        j.got_allotment ? 'allotment' : null,
+        j.joined ? 'joined' : null,
+      ].filter(Boolean).join(', ');
+      const lines = j.log_tail || [];
+      const sig = lines.length + '|' + (lines[lines.length - 1] || '');
+
+      let art = box.querySelector(`[data-job-id="${CSS.escape(j.id)}"]`);
+      if (!art) {
+        stickBottom.set(j.id, true);
+        art = document.createElement('article');
+        art.className = 'job';
+        art.dataset.jobId = j.id;
+        art.innerHTML = `
+          <div class="job-head">
+            <div>
+              <div class="uid"></div>
+              <div class="subline"></div>
+            </div>
+            <span class="badge"></span>
+          </div>
+          <div class="log-wrap"><div class="log"></div></div>
+          <div class="job-actions"></div>`;
+        box.appendChild(art);
+      }
+
+      art.querySelector('.uid').innerHTML = `${esc(j.uid)}${nick}`;
+      art.querySelector('.subline').textContent = `#${j.id}${region}${flags ? ' · ' + flags : ''}`;
+      const badge = art.querySelector('.badge');
+      badge.className = 'badge ' + j.status;
+      badge.textContent = j.status;
+
+      const logEl = art.querySelector('.log');
+      bindLogScroll(logEl, j.id);
+      if (logSig.get(j.id) !== sig) {
+        // default: follow bottom (only false after user deliberately scrolls up)
+        const follow = stickBottom.get(j.id) !== false;
+        logEl._ignoreScroll = true;
+        logEl.innerHTML = renderLogHtml(lines);
+        logSig.set(j.id, sig);
+        if (follow) {
+          scrollLogBottom(logEl);
+        } else {
+          // keep user's reading position; clear ignore on next frame
+          requestAnimationFrame(() => { logEl._ignoreScroll = false; });
+        }
+      }
+
+      const actions = art.querySelector('.job-actions');
+      if (active) {
+        if (!actions.querySelector('button')) {
+          actions.innerHTML = `<button class="btn-danger" type="button">Stop</button>`;
+          actions.querySelector('button').onclick = () => stopJob(j.id);
+        }
+        actions.style.display = '';
+      } else {
+        actions.innerHTML = '';
+        actions.style.display = 'none';
+      }
+    }
+
+    function renderJobs(jobs) {
+      const box = $('jobs');
+      if (!jobs.length) {
+        box.innerHTML = '<div class="empty">No jobs yet</div>';
+        stickBottom.clear();
+        logSig.clear();
+        return;
+      }
+      if (box.querySelector('.empty')) box.innerHTML = '';
+
+      const ids = new Set(jobs.map(j => j.id));
+      for (const el of [...box.querySelectorAll('[data-job-id]')]) {
+        if (!ids.has(el.dataset.jobId)) {
+          stickBottom.delete(el.dataset.jobId);
+          logSig.delete(el.dataset.jobId);
+          el.remove();
+        }
+      }
+
+      // keep order: newest first — only move nodes when order actually changed
+      // (appendChild of an already-correct child resets scrollTop in Chromium)
+      for (const j of jobs) upsertJob(box, j);
+      const desired = jobs.map(j => j.id);
+      const current = [...box.querySelectorAll('[data-job-id]')].map(el => el.dataset.jobId);
+      const orderChanged = desired.length !== current.length ||
+        desired.some((id, i) => id !== current[i]);
+      if (orderChanged) {
+        for (const id of desired) {
+          const el = box.querySelector(`[data-job-id="${CSS.escape(id)}"]`);
+          if (el) box.appendChild(el);
+        }
+        // after reorder, restore follow-scroll for jobs that should stick
+        for (const id of desired) {
+          if (stickBottom.get(id) === false) continue;
+          const logEl = box.querySelector(`[data-job-id="${CSS.escape(id)}"] .log`);
+          if (logEl) scrollLogBottom(logEl);
+        }
+      }
+    }
+
+    async function refresh() {
+      try {
+        const data = await api('/api/status');
+        if (!data.ok) return;
+        $('active').textContent = data.active;
+        $('max').textContent = data.max;
+        $('afk').textContent = data.afk_s;
+        $('engine').textContent = data.engine_ok ? 'engine ready' : 'engine MISSING';
+        $('engine').style.color = data.engine_ok ? 'var(--ok)' : 'var(--bad)';
+        renderJobs(data.jobs || []);
+      } catch (_) {}
+    }
+
+    refresh();
+    setInterval(refresh, 1000);
+  </script>
+</body>
+</html>

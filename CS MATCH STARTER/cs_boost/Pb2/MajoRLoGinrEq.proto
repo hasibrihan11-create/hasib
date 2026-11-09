@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+message MajorLogin {
+  string event_time = 3;
+  string game_name = 4;
+  int32 platform_id = 5;
+  string client_version = 7;
+  string system_software = 8;
+  string system_hardware = 9;
+  string telecom_operator = 10;
+  string network_type = 11;
+  uint32 screen_width = 12;
+  uint32 screen_height = 13;
+  string screen_dpi = 14;
+  string processor_details = 15;
+  uint32 memory = 16;
+  string gpu_renderer = 17;
+  string gpu_version = 18;
+  string unique_device_id = 19;
+  string client_ip = 20;
+  string language = 21;
+  string open_id = 22;
+  string open_id_type = 23;
+  string device_type = 24;
+  GameSecurity memory_available = 25;
+  string country_code = 26;          // NEW: "TW"
+  string access_token = 29;
+  int32 platform_sdk_id = 30;
+  string network_operator_a = 41;
+  string network_type_a = 42;
+  string client_using_version = 57;
+  int32 external_storage_total = 60;
+  int32 external_storage_available = 61;
+  int32 internal_storage_total = 62;
+  int32 internal_storage_available = 63;
+  int32 game_disk_storage_available = 64;
+  int32 game_disk_storage_total = 65;
+  int32 external_sdcard_avail_storage = 66;
+  int32 external_sdcard_total_storage = 67;
+  int32 login_by = 73;
+  string library_path = 74;
+  int32 reg_avatar = 76;
+  string library_token = 77;
+  int32 channel_type = 78;
+  int32 cpu_type = 79;
+  string cpu_architecture = 81;
+  string client_version_code = 83;
+  int32 some_flag = 85;               // NEW: value 3
+  string graphics_api = 86;
+  uint32 supported_astc_bitset = 87;
+  int32 login_open_id_type = 88;
+  bytes analytics_detail = 89;
+  uint32 loading_time = 92;
+  string release_channel = 93;
+  string extra_info = 94;
+  uint32 android_engine_init_flag = 95;
+  string json_extra = 96;             // NEW: {"cur_rate":null,...}
+  int32 if_push = 97;
+  int32 is_vpn = 98;
+  string origin_platform_type = 99;
+  string primary_platform_type = 100;
+  bytes unknown_102 = 102;            // NEW: raw bytes
+}
+
+message GameSecurity {
+  int32 version = 6;
+  uint64 hidden_value = 8;
+  uint64 extra_value = 12;            // NEW: 3416172
+}
